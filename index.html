@@ -47,6 +47,81 @@
 
     <hr>
 
+    <h2>Why SERIALIZABLE Matters</h2>
+
+    <p>Most applications run on <strong>READ COMMITTED</strong> isolation by default, which allows various consistency anomalies. Let's see how these manifest in a simple todo app:</p>
+
+    <details>
+        <summary>🐛 Lost Update Example</summary>
+        <p>Two users editing the same todo simultaneously:</p>
+        <pre><code>-- User A starts editing todo #123
+BEGIN;
+SELECT title FROM todos WHERE id = 123;  -- "Buy groceries"
+
+-- User B also starts editing the same todo
+BEGIN;
+SELECT title FROM todos WHERE id = 123;  -- "Buy groceries"
+
+-- User A updates the title
+UPDATE todos SET title = 'Buy groceries and milk' WHERE id = 123;
+COMMIT;
+
+-- User B updates based on stale data
+UPDATE todos SET title = 'Buy groceries and bread' WHERE id = 123;
+COMMIT;
+
+-- Result: User A's changes are lost!</code></pre>
+        <p><strong>In READ COMMITTED:</strong> User B's update overwrites User A's changes.</p>
+        <p><strong>In SERIALIZABLE:</strong> One transaction would be aborted and retry with fresh data.</p>
+    </details>
+
+    <details>
+        <summary>📊 Write Skew Example</summary>
+        <p>Maintaining a business constraint across multiple todos:</p>
+        <pre><code>-- Rule: At most 3 todos can be marked "urgent" priority
+-- Currently 2 urgent todos exist
+
+-- Transaction A: Mark todo #456 as urgent
+BEGIN;
+SELECT COUNT(*) FROM todos WHERE priority = 'urgent';  -- Returns 2
+-- User thinks: "OK, I can add one more"
+UPDATE todos SET priority = 'urgent' WHERE id = 456;
+
+-- Transaction B: Mark todo #789 as urgent
+BEGIN;
+SELECT COUNT(*) FROM todos WHERE priority = 'urgent';  -- Returns 2
+-- User thinks: "OK, I can add one more"
+UPDATE todos SET priority = 'urgent' WHERE id = 789;
+
+-- Both transactions commit successfully
+-- Result: 4 urgent todos! Business rule violated.</code></pre>
+        <p><strong>In READ COMMITTED:</strong> Both transactions see consistent snapshots but create inconsistent final state.</p>
+        <p><strong>In SERIALIZABLE:</strong> One transaction would be aborted to maintain the constraint.</p>
+    </details>
+
+    <p><strong>SERIALIZABLE</strong> isolation eliminates these anomalies by ensuring transactions appear to execute one at a time, even when running concurrently. For todo apps, this means:</p>
+
+    <ul>
+        <li><strong>No lost updates</strong> when multiple users edit the same todo</li>
+        <li><strong>Consistent business rules</strong> across multiple todos</li>
+        <li><strong>Reliable audit trails</strong> without manual version management</li>
+        <li><strong>Predictable behavior</strong> under concurrent load</li>
+    </ul>
+
+    <details>
+        <summary>📚 Learn More About Consistency</summary>
+        <p>For a deep dive into consistency models and isolation levels, check out <a href="https://jepsen.io/consistency"><strong>Jepsen's Consistency Models</strong></a> - an excellent interactive guide to understanding how different databases handle consistency.</p>
+
+        <p>Key resources:</p>
+        <ul>
+            <li><a href="https://jepsen.io/consistency/models/serializable">Jepsen on Serializability</a></li>
+            <li><a href="https://jepsen.io/consistency/models/snapshot-isolation">Snapshot Isolation vs Serializability</a></li>
+            <li><a href="https://jepsen.io/consistency">Interactive Consistency Explorer</a></li>
+        </ul>
+    </details>
+
+    <hr>
+
     <h2>Two Approaches</h2>
 
     <details>

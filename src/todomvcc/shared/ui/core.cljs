@@ -7,7 +7,7 @@
             [todomvcc.shared.ui.view :as view]))
 
 (enable-console-print!)
-(rf/dispatch-sync [:initialise-db])
+(rf/dispatch-sync [::events/initialise-db])
 
 (defonce root-container
   (rdc/create-root (.getElementById js/document "app")))

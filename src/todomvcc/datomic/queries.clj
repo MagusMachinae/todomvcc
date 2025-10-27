@@ -64,14 +64,14 @@
   (datomic/transact db/conn {:tx-data [[:db/retractEntity id]]}))
 
 (defn concurrent-update []
-  (pmap (partial datomic/transact db/conn) [{:tx-data [{:todo/id #uuid"b46c09c2-ed26-4d71-ac38-9517df21277d"
+  (pmap (partial datomic/transact db/conn) [{:tx-data [{:todo/id db/task-1-squuid
                                                         :todo/title "Define Schema (Session A)"}
-                                                       {:todo/id #uuid"ba4e71ac-7e19-4a91-b6a9-8818212f114f"
+                                                       {:todo/id db/task-3-squuid
                                                         :todo/title "Write Queries (Session A)"}
-                                                       {:todo/id #uuid"9a28ee74-c76a-4c84-b7bf-15e76c8263f7"
+                                                       {:todo/id db/task-2-squuid
                                                         :todo/completed true}]}
-                                            {:tx-data [{:todo/id #uuid"b46c09c2-ed26-4d71-ac38-9517df21277d"
+                                            {:tx-data [{:todo/id db/task-1-squuid
                                                         :todo/title "Define Schema (Session B)"}
-                                                       {:todo/id #uuid"ba4e71ac-7e19-4a91-b6a9-8818212f114f"
+                                                       {:todo/id db/task-3-squuid
                                                         :todo/title "Write Queries (Session B)"}
-                                                       [:db/add [:todo/id #uuid"b46c09c2-ed26-4d71-ac38-9517df21277d"] :todo/completed true]]}]))
+                                                       [:db/add [:todo/id db/task-1-squuid] :todo/completed true]]}]))

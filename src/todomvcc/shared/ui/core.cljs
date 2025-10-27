@@ -1,10 +1,10 @@
 (ns todomvcc.shared.ui.core
-  (:require [goog.events :as events]
+  (:require [goog.events :as g-events]
             [reagent.dom.client :as rdc]
             [re-frame.core :as rf]
-            [todomvcc.ui.events] ;; These two are only required to make the compiler
-            [todomvcc.ui.subs]   ;; load them (see docs/App-Structure.md)
-            [todomvcc.ui.views]))
+            [todomvcc.shared.ui.events :as events] 
+            [todomvcc.shared.ui.subs :as subs]   
+            [todomvcc.shared.ui.view :as view]))
 
 (enable-console-print!)
 (rf/dispatch-sync [:initialise-db])
@@ -14,7 +14,7 @@
 
 (defn render
   []
-  (rdc/render root-container [todomvcc.ui.views/body]))
+  (rdc/render root-container [view/body]))
 
 (defn ^:dev/after-load clear-cache-and-render!
   [] 

@@ -12,7 +12,7 @@
    :output-dir "resources/public/js"
    :modules
    {:client
-    {:init-fn todomvcc.ui.core/main}}
+    {:init-fn todomvcc.shared.ui.core/main}}
    :dev
    {:compiler-options
     {:closure-defines

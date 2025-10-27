@@ -1,0 +1,11 @@
+{
+  "name": "todomvcc-ui",
+  
+  "devDependencies": {
+    "shadow-cljs": "3.2.1"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  }
+}

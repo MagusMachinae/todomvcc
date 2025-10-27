@@ -32,7 +32,7 @@
     [:div {:style {:overflow "scroll"}}
      [:ul 
       (for [result  history]
-        ^{:key (:id todo)} 
+        
         [result-container result])]]))
 
 (defn interactive-demo []

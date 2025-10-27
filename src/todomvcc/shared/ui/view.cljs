@@ -1,7 +1,8 @@
 (ns todomvcc.shared.ui.view
   (:require [re-frame.core :as rf]
             [reagent.core :as reagent]
-            [todomvcc.shared.ui.events :as events]))
+            [todomvcc.shared.ui.events :as events]
+            [todomvcc.shared.ui.subs :as subs]))
 
 (defn nav-header []
   [:header
@@ -28,7 +29,7 @@
    (str ">>> " result)])
 
 (defn results-pane []
-  (let [history (rf/subscribe [::events/query-results])]
+  (let [history (rf/subscribe [::subs/query-results])]
     [:div {:style {:overflow "scroll"}}
      [:ul 
       (for [result  history]

@@ -42,8 +42,8 @@
                  :uri (str "https://localhost:3000/" (:target-db db) "/list-active-todos")
                  :response-format (ajax/json-response-format {:keywords? true})
                  :format          (ajax/json-request-format)
-                 :on-success [:onb/display-results]
-                 :on-failure [:onb/query-error]}}))
+                 :on-success [::display-results]
+                 :on-failure [::query-error]}}))
 
 (rf/reg-event-fx
  ::list-completed-todos
@@ -52,5 +52,5 @@
                  :uri (str "https://localhost:3000/" (:target-db db) "/list-completed-todos")
                  :response-format (ajax/json-response-format {:keywords? true})
                  :format          (ajax/json-request-format)
-                 :on-success [:onb/display-results]
-                 :on-failure [:onb/query-error]}}))
+                 :on-success [::display-results]
+                 :on-failure [::query-error]}}))

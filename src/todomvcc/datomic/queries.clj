@@ -1,7 +1,7 @@
 (ns datomic.queries
   (:require [datomic.client.api :as datomic]
-            [todomvcc.datomic.db :as db]
-            ))
+            [todomvcc.datomic.db :as db])
+  (:import (java.time Instant)))
 
 (def all-todos '[:find (pull ?e [*])
                  :where [?e :todo/id]])
@@ -58,7 +58,7 @@
 (defn assert-new-todo [title]
   (datomic/transact db/conn {:tx-data [{:todo/title title
                                         :todo/status false
-                                        :todo/updated-at (.Instant/now)}]}))
+                                        :todo/updated-at (Instant/now)}]}))
 
 (defn retract-todo [id]
   (datomic/transact db/conn {:tx-data [[:db/retractEntity id]]}))

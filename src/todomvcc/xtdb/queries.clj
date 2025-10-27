@@ -26,20 +26,21 @@
                                      :for-valid-time :all-time})))
 
 (defn entity-history [id]
-  (xt/q db/conn todo-history
+  (xt/q db/conn 
+        todo-history
         {:args {:id id}}))
 
-(defn entity-as-of [id txn-or-instant]
+(defn entity-as-of [id instant]
   (xt/q db/conn
         todo-as-of
         {:args {:id id
-                :time txn-or-instant}}))
+                :time instant}}))
 
-(defn status-as-of [id txn-or-instant]
+(defn status-as-of [id instant]
   (xt/q db/conn
         todo-status-as-of
         {:args {:id id
-                :time txn-or-instant}}))
+                :time instant}}))
 
 (defn list-all-todos []
   (xt/q db/conn all-todos))

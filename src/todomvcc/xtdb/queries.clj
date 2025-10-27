@@ -2,28 +2,36 @@
   (:require [todomvcc.xtdb.db :as db]
             [xtdb.api :as xt]))
 
-(def all-todos '(-> (from :todos [*])))
+(def all-todos 
+  '(-> (from :todos [*])))
 
-(def todo-by-id '(-> (from :todos [*])
-                     (where (= xt/id $id))))
+(def todo-by-id
+  (concat all-todos
+          '(where (= xt/id $id))))      
 
-(def todo-status '(-> (from :todos [todo/completed])
-                      (where (= xt/id $id))))
+(def todo-status 
+  '(-> (from :todos [todo/completed])
+       (where (= xt/id $id))))
 
-(def active-todos '(-> (from :todos [*])
-                       (where (= todo/completed false))))
+(def active-todos
+  (concat all-todos
+          '(where (= todo/completed false))))
 
-(def completed-todos '(-> (from :todos [*])
-                          (where (= todo/completed true))))
+(def completed-todos
+  (concat all-todos
+          '(where (= todo/completed true))))
 
-(def todo-status-as-of '(-> (from :todos {:bind [todo/completed]
-                                          :for-valid-time (at $time)})))
+(def todo-status-as-of
+  '(-> (from :todos {:bind [todo/completed]
+                     :for-valid-time (at $time)})))
 
-(def todo-as-of '(-> (from :todos {:bind [todo/completed xt/id todo/title]
-                                   :for-valid-time (at $time)})))
+(def todo-as-of 
+  '(-> (from :todos {:bind [todo/completed xt/id todo/title]
+                     :for-valid-time (at $time)})))
 
-(def todo-history '(-> (from :todos {:bind [todo/completed xt/id todo/title]
-                                     :for-valid-time :all-time})))
+(def todo-history
+  '(-> (from :todos {:bind [todo/completed xt/id todo/title]
+                     :for-valid-time :all-time})))
 
 (defn entity-history [id]
   (xt/q db/conn 

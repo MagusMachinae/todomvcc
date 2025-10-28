@@ -1,4 +1,4 @@
-(ns datomic.schema)
+(ns todomvcc.datomic.schema)
 
 (def data-model
   [{:db/ident :todo/id
@@ -15,7 +15,7 @@
     :db/cardinality :db.cardinality/one
     :db/doc         "Task Completion Status"}
    {:db/ident :todo/updated-at
-    :db/valueType :db.type/string
+    :db/valueType :db.type/instant
     :db/cardinality :db.cardinality/one
     :db/doc         "Last Update"}])
   

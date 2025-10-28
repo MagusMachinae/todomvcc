@@ -1,16 +1,16 @@
 (ns todomvcc.datomic.db
   (:require [datomic.client.api :as datomic]
             [todomvcc.datomic.schema :as schema]
-            [collosal.squuid.uuid :as squuid])
+            [com.yetanalytics.squuid.uuid :as squuid])
   (:import (java.time Instant)))
 
 (def cfg {:server-type :datomic-local
-          :system "datomic-impl"})
+          :system "datomic-impl"
+          :storage-dir :mem})
 
 (def client (datomic/client cfg))
 
-(defonce initialised-client (datomic/create-database-client client {:db-name "todos"}))
-
+(defonce initialised-client (datomic/create-database client {:db-name "todos"}))
 
 (def conn (datomic/connect client {:db-name "todos"}))
 
@@ -24,18 +24,19 @@
 
 (defonce task-3-squuid (squuid/make-squuid (Instant/now) #uuid"ba4e71ac-7e19-4a91-b6a9-8818212f114f"))
 
-(defonce initial-transactions
-  (datomic/transact conn {:tx-data [{:todo/id task-1-squuid
+(def initial-transactions
+  (datomic/transact conn {:tx-data [{:todo/id (:squuid task-1-squuid)
                                      :todo/title "Task 1"
-                                     :todo/status false
-                                     :todo/updated-at (.Instant/now)}
-                                    {:todo/id task-2-squuid
+                                     :todo/completed false
+                                     :todo/updated-at (java.util.Date/from (Instant/now))}
+                                    {:todo/id (:squuid task-2-squuid)
                                      :todo/title "Task 2"
-                                     :todo/status false
-                                     :todo/updated-at (.Instant/now)}
-                                    {:todo/id task-3-squuid
+                                     :todo/completed false
+                                     :todo/updated-at (java.util.Date/from (Instant/now))}
+                                    {:todo/id (:squuid task-3-squuid)
                                      :todo/title "Task 3"
-                                     :todo/status false
-                                     :todo/updated-at (.Instant/now)}
-                                    [:db/add [:todo/id task-2-squuid] :todo/title "Better Names for Todos"]]}))
-  
+                                     :todo/completed false
+                                     :todo/updated-at (java.util.Date/from (Instant/now))}]}))
+                          
+(def update-name 
+  (datomic/transact conn [:db/add [:todo/id (:squuid task-2-squuid)] :todo/title "Better Names for Todos"])) 

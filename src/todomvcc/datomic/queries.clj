@@ -1,4 +1,4 @@
-(ns datomic.queries
+(ns todomvcc.datomic.queries
   (:require [datomic.client.api :as datomic]
             [todomvcc.datomic.db :as db])
   (:import (java.time Instant)))

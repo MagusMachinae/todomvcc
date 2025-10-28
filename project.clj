@@ -1,6 +1,6 @@
 (defproject todomvcc "0.1.0"
   :dependencies [[org.clojure/clojure "1.12.3"]
-                 [com.xtdb/xtdb-api "2.0.0"]
+                 [com.xtdb/xtdb-api "2.0.0" :exclusions [com.fasterxml.jackson.core/jackson-core]]
                  [com.xtdb/xtdb-core "2.0.0"]
                  [metosin/malli "0.16.4"]
                  [com.github.seancorfield/next.jdbc "1.3.1048"]]

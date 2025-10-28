@@ -4,6 +4,7 @@
                  [com.xtdb/xtdb-core "2.0.0"]
                  [metosin/malli "0.16.4"]
                  [com.github.seancorfield/next.jdbc "1.3.1048"]
+                 [org.postgresql/postgresql "42.7.8"]
                  [com.datomic/local "1.0.291"]
                  [com.yetanalytics/colossal-squuid "0.1.5"]]
   :repositories [["sonatype-snapshots" {:url "https://s01.oss.sonatype.org/content/repositories/snapshots"}]]

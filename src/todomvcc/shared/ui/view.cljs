@@ -31,14 +31,16 @@
 (defn results-pane []
   (let [history (rf/subscribe [::subs/query-results])]
     [:div {:style {:overflow "scroll"}}
-     [:ul 
-      (for [result  history]
-        
+     [:ul
+      (for [result history]
         [result-container result])]]))
 
 (defn interactive-demo []
   [:div [:h2 "Interactive Demo" {:id "interactive-demo"}]
-   [:grid]
+   [:container {:style {:display "grid"
+                        :grid-template-columns "34% 66%"}}
+    [input-pane]
+    [results-pane]]
    
    [:p "The demo will showcase side-by-side comparisons demonstrating:"]
    [:ol

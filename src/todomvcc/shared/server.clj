@@ -1,7 +1,15 @@
 (ns todomvcc.shared.server
-  (:require [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io]
+            [io.pedestal.http :as server]
+            [reitit.pedestal :as pedestal]
+            [muuntaja.interceptor]
+            [reitit.http :as http]
+            [reitit.ring :as ring]))
 
-(def config {:port 3000})
+(def config {::server/type :jetty
+             ::server/port 3000
+             ::server/join? false
+             ::server/routes []})
 
 (defn route-builder [dir]
   (let [ns-root (str "todomvcc." dir ".queries")
@@ -71,4 +79,22 @@
   (let [db-impls (filter (fn [dir] (not (#{"shared"} dir))) (seq (.list (io/file "src/todomvcc"))))]
     (into ["/"] (map route-builder db-impls))))
 
-(defn -main [])
+(def router
+  (pedestal/routing-interceptor
+   (http/router routes)
+   (ring/routes
+    (ring/create-resource-handler)
+    (ring/create-default-handler))
+   {:interceptors [(muuntaja.interceptor/format-interceptor)]}))
+
+(defn start []
+  (-> config
+      (server/default-interceptors)
+      (pedestal/replace-last-interceptor router)
+      (server/dev-interceptors)
+      (server/create-server)
+      (server/start))
+  (println "server running in port 3000"))
+
+(defn -main []
+  (start))

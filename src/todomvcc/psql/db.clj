@@ -2,7 +2,7 @@
   (:require [next.jdbc :as jdbc]
             [hugsql.core :as hugsql]))
 
-(def cfg {:dbtype "psql" :db-name "postgres-bitemporal"})
+(def cfg {:dbtype "postgresql" :db-name "postgres-bitemporal"})
 
 (def ds (jdbc/get-datasource cfg))
 

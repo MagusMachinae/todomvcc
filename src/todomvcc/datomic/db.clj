@@ -16,15 +16,13 @@
 
 (defonce transact-schema (datomic/transact conn {:tx-data schema/data-model}))
 
-(def database (datomic/db conn))
-
 (defonce task-1-squuid (squuid/make-squuid (Instant/now) #uuid"b46c09c2-ed26-4d71-ac38-9517df21277d"))
 
 (defonce task-2-squuid (squuid/make-squuid (Instant/now) #uuid"9a28ee74-c76a-4c84-b7bf-15e76c8263f7"))
 
 (defonce task-3-squuid (squuid/make-squuid (Instant/now) #uuid"ba4e71ac-7e19-4a91-b6a9-8818212f114f"))
 
-(def initial-transactions
+(defonce initial-transactions
   (datomic/transact conn {:tx-data [{:todo/id (:squuid task-1-squuid)
                                      :todo/title "Task 1"
                                      :todo/completed false
@@ -38,5 +36,7 @@
                                      :todo/completed false
                                      :todo/updated-at (java.util.Date/from (Instant/now))}]}))
                           
-(def update-name 
-  (datomic/transact conn [:db/add [:todo/id (:squuid task-2-squuid)] :todo/title "Better Names for Todos"])) 
+(defonce update-name 
+  (datomic/transact conn [:db/add [:todo/id (:squuid task-2-squuid)] :todo/title "Better Names for Todos"]))
+
+(def database (datomic/db conn))

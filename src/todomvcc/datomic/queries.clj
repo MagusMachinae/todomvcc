@@ -1,6 +1,7 @@
 (ns todomvcc.datomic.queries
   (:require [datomic.client.api :as datomic]
-            [todomvcc.datomic.db :as db])
+            [todomvcc.datomic.db :as db]
+            [com.yetanalytics.squuid.uuid :as squuid])
   (:import (java.time Instant)))
 
 (def all-todos '[:find (pull ?e [*])
@@ -55,12 +56,14 @@
 (defn edit-title [id title]
   (datomic/transact db/conn {:tx-data [[:db/add [:todo/id id] :todo/title title]]}))
 
-(defn assert-new-todo [title]
-  (datomic/transact db/conn {:tx-data [{:todo/title title
-                                        :todo/status false
-                                        :todo/updated-at (Instant/now)}]}))
+(defn create-todo [title]
+  (let [now (Instant/now)] 
+   (datomic/transact db/conn {:tx-data [{:todo/id (:squuid (squuid/make-squuid now (random-uuid)))
+                                         :todo/title title
+                                         :todo/status false
+                                         :todo/updated-at now}]})))
 
-(defn retract-todo [id]
+(defn delete-todo [id]
   (datomic/transact db/conn {:tx-data [[:db/retractEntity id]]}))
 
 (defn concurrent-update []

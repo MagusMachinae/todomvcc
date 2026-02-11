@@ -1,4 +1,5 @@
 /*Create*/
+-- :name create-todo
 INSERT INTO todos (title) VALUES (:title)
 RETURNING *;
 
@@ -28,7 +29,7 @@ RETURNING *;
 
 -- :name edit-title
 UPDATE todos
-SET title = 'Updated title',
+SET title = :title,
     updated_at = now(),
     version = version + 1
 WHERE id = :id
@@ -40,11 +41,13 @@ DELETE FROM todos WHERE id = :id;
 
 
 -- Complete version history
+-- :name entity-history
 SELECT * FROM todos_history
 WHERE id = :id
 ORDER BY version;
 
 -- Include current state
+-- :name entity-as-of
 SELECT id, title, completed, updated_at, version, txid, 'current' as state
 FROM todos WHERE id = :id
 UNION ALL
@@ -54,6 +57,7 @@ ORDER BY version;
 
 
 -- Todo state as of specific transaction
+-- :name status-as-of
 SELECT * FROM todos_history
 WHERE id = :id
   AND txid <= :tx-id
@@ -61,6 +65,7 @@ ORDER BY version DESC
 LIMIT 1;
 
 -- All todos as of specific transaction
+-- :name todos-as-ofs
 WITH historical_state AS (
     SELECT DISTINCT ON (id) *
     FROM todos_history
